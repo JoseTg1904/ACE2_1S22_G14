@@ -23,8 +23,8 @@ void setup() {
 
 void loop() {
   //lectura de sensores
-  double temperatura1 = calcularTemperatura(pinTemperatura1);
-  double temperatura2 = calcularTemperatura(pinTemperatura2);
+  float temperatura1 = calcularTemperatura(pinTemperatura1);
+  float temperatura2 = calcularTemperatura(pinTemperatura2);
   float humedad = calcularHumedad();
   double lumens = calcularLumens();
   float CO2 = calcularCO2();
@@ -33,10 +33,10 @@ void loop() {
   delay(1500);
 }
 
-double calcularTemperatura(int pin) {
+float calcularTemperatura(int pin) {
   int lectura = analogRead(pin);
-  double millivolts = (lectura / 1023.0) * 5000;
-  return millivolts / 10;
+  float millivolts = (lectura / 1024.0) * 5000;
+  return (float)(millivolts / 10);
 }
 
 float calcularHumedad() {
@@ -58,16 +58,16 @@ float calcularCO2() {
   return PARA * pow((resistencia/RZERO), -PARB);
 }
 
-String obtenerJson(double temp1, double temp2, float hum, double lum, float co2) {
-  String jsonSalida = "{\"temperatura1: \"";
+String obtenerJson(float temp1, float temp2, float hum, double lum, float co2) {
+  String jsonSalida = "{\"temperatura1\": ";
   jsonSalida.concat(temp1);
-  jsonSalida +=  ",\"temperatura2: \"";
+  jsonSalida +=  ",\"temperatura2\": ";
   jsonSalida.concat(temp2);
-  jsonSalida +=  ",\"humedad: \"";
+  jsonSalida +=  ",\"humedad\": ";
   jsonSalida.concat(hum);
-  jsonSalida +=  ",\"lumens: \"";
+  jsonSalida +=  ",\"lumens\": ";
   jsonSalida.concat(lum);
-  jsonSalida +=  ",\"co2: \"";
+  jsonSalida +=  ",\"co2\": ";
   jsonSalida.concat(lum);
   jsonSalida += "}";
   return jsonSalida;
