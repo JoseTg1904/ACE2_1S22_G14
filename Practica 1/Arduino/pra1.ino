@@ -49,7 +49,7 @@ float calcularHumedad() {
 double calcularLumens() {
   int lectura = analogRead(pinLDR);
   double lux = 12500000 * pow(lectura, -1.4059);
-  return 0.09290304 * lux * 0.000215278;
+  return lux * 0.00002;
 }
 
 float calcularCO2() {
