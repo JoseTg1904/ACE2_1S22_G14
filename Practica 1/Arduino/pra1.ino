@@ -30,13 +30,12 @@ void loop() {
   float CO2 = calcularCO2();
 
   Serial.println(obtenerJson(temperatura1, temperatura2, humedad, lumens, CO2));
-  delay(1500);
+  delay(2000);
 }
 
 float calcularTemperatura(int pin) {
   int lectura = analogRead(pin);
-  float millivolts = (lectura / 1024.0) * 5000;
-  return (float)(millivolts / 10);
+  return  (float)((lectura * 500.0) / 1024.0);
 }
 
 float calcularHumedad() {
