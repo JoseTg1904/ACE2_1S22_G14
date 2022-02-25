@@ -35,7 +35,7 @@ void loop() {
 
 float calcularTemperatura(int pin) {
   int lectura = analogRead(pin);
-  return  (float)((lectura * 500.0) / 1024.0);
+  return  (float)((lectura * (5.0/1024.0)) / 0.01);
 }
 
 float calcularHumedad() {
