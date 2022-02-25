@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
@@ -72,6 +73,106 @@ def obtenerMetricas():
         return jsonify(metrica)
 
     return jsonify(metrica)
+
+@app.route("/grafica1", methods = ["GET"])
+def grafica1():
+    metricas = []
+    try:
+        cnx = mysql.connector.connect(**config)
+        cursor = cnx.cursor(dictionary=True)
+
+        query = """select avg(temperatura1) as afuera, 
+        avg(temperatura2) as adentro, date(fecha) as fecha 
+        from medidas group by date(fecha) order by date(fecha)"""
+
+        cursor.execute(query)
+        for row in cursor:
+            metricas.append(row)
+
+        cursor.close()
+        cnx.commit()
+        cnx.close()
+
+    except mysql.connector.Error as err:
+        print(err)
+        return jsonify([])
+
+    return jsonify(metricas)
+
+@app.route("/grafica2", methods = ["GET"])
+def grafica2():
+    metricas = []
+    try:
+        cnx = mysql.connector.connect(**config)
+        cursor = cnx.cursor(dictionary=True)
+
+        query = """select avg(temperatura2) as adentro, 
+        avg(humedad) as humedad, date(fecha) as fecha from medidas 
+        group by date(fecha) order by date(fecha)"""
+
+        cursor.execute(query)
+        for row in cursor:
+            metricas.append(row)
+
+        cursor.close()
+        cnx.commit()
+        cnx.close()
+
+    except mysql.connector.Error as err:
+        print(err)
+        return jsonify([])
+
+    return jsonify(metricas)
+
+@app.route("/grafica3", methods = ["GET"])
+def grafica3():
+    metricas = []
+    try:
+        cnx = mysql.connector.connect(**config)
+        cursor = cnx.cursor(dictionary=True)
+
+        query = """select avg(temperatura2) as adentro, 
+        avg(lumens) as clima, date(fecha) as fecha from medidas 
+        group by date(fecha) order by date(fecha)"""
+
+        cursor.execute(query)
+        for row in cursor:
+            metricas.append(row)
+
+        cursor.close()
+        cnx.commit()
+        cnx.close()
+
+    except mysql.connector.Error as err:
+        print(err)
+        return jsonify([])
+
+    return jsonify(metricas)
+
+@app.route("/grafica4", methods = ["GET"])
+def grafica4():
+    metricas = []
+    try:
+        cnx = mysql.connector.connect(**config)
+        cursor = cnx.cursor(dictionary=True)
+
+        query = """select avg(humedad) as humedad, 
+        avg(co2) as aire, date(fecha) as fecha from medidas 
+        group by date(fecha) order by date(fecha)"""
+
+        cursor.execute(query)
+        for row in cursor:
+            metricas.append(row)
+
+        cursor.close()
+        cnx.commit()
+        cnx.close()
+
+    except mysql.connector.Error as err:
+        print(err)
+        return jsonify([])
+
+    return jsonify(metricas)
 
 if __name__ == "__main__":
     app.run(host = "0.0.0.0", port = 3010)
