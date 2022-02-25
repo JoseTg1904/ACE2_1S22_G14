@@ -21,15 +21,29 @@ boolean lightComplete = false;
 boolean airComplete = false;
 boolean humidityComplete = false;
 
+float externalXPOS = 120.0;
+float internalXPOS = 350.0;
+float temperatureYPOS = 30.0;
+float maxTemperature = 100.0;
+
+float luminosityXPOS = 650;
+float luminosityYPOS = 140;
+float luminositySize = 150;
+float maxLuminosity = 2;
+
 void setup() {
-  size(500, 500);
-  //background(100, 133, 161);
+  size(850, 650);
   background(255);
   frameRate(60);
+  getData();
+  prevHumidity = nextHumidity;
+  prevExternalTemperature = nextExternalTemperature;
+  prevInternalTemperature = nextInternalTemperature;
+  prevLight = nextLight;
+  prevAir = nextAir;
 }
 
 void draw() {
-  //background(100, 133, 161);
   background(255);
   if(animationComplete == true){
     animationComplete = false;
@@ -41,9 +55,9 @@ void draw() {
     getData();
   } else {
     if(humidityComplete == false){
-      if(nextHumidity > prevHumidity){
+      if((int)nextHumidity > (int)prevHumidity){
     
-      } else if (nextHumidity < prevHumidity){
+      } else if ((int)nextHumidity < (int)prevHumidity){
     
       } else {
         humidityComplete = true;
@@ -52,9 +66,9 @@ void draw() {
     
     
     if(airComplete == false){
-      if(nextAir > prevAir){
+      if((int)nextAir > (int)prevAir){
     
-      } else if (nextAir < prevAir){
+      } else if ((int)nextAir < (int)prevAir){
     
       } else {
         airComplete = true;
@@ -63,43 +77,46 @@ void draw() {
     
     
     if(lightComplete == false){
-      if(nextLight > prevLight){
-    
-      } else if (nextLight < prevLight){
-    
-      } else {
+      if (abs(nextLight - prevLight) < 0.018){
         lightComplete = true;
-      } 
+      } else if(nextLight > prevLight){
+        prevLight += 0.018;
+        drawLuminosity();
+      } else if (nextLight < prevLight){
+        prevLight -= 0.018;
+        drawLuminosity();
+      }
     }
     
     
     if(externalComplete == false){
-      if(nextExternalTemperature > prevExternalTemperature){
-        prevExternalTemperature++;
-        drawTemperature(120, 80, prevExternalTemperature, prevExternalTemperature);
-      } else if (nextExternalTemperature < prevExternalTemperature){
-        prevExternalTemperature--;
-        drawTemperature(120, 80, prevExternalTemperature, prevExternalTemperature);
-      } else {
+      if (abs(nextExternalTemperature - prevExternalTemperature) < 0.21){
         externalComplete = true;
-      } 
+      } else if(nextExternalTemperature > prevExternalTemperature){
+        prevExternalTemperature += 0.21;
+        drawTemperature(externalXPOS, temperatureYPOS, prevExternalTemperature, prevExternalTemperature);
+      } else if (nextExternalTemperature < prevExternalTemperature){
+        prevExternalTemperature -= 0.21;
+        drawTemperature(externalXPOS, temperatureYPOS, prevExternalTemperature, prevExternalTemperature);
+      }
     }
     
     
     if(internalComplete == false){
-      if(nextInternalTemperature > prevInternalTemperature){
-        prevInternalTemperature++;
-        drawTemperature(240, 80, prevInternalTemperature, prevInternalTemperature);
-      } else if (nextInternalTemperature < prevInternalTemperature){
-        prevInternalTemperature--;
-        drawTemperature(240, 80, prevInternalTemperature, prevInternalTemperature);
-      } else {
+      if (abs(nextInternalTemperature - prevInternalTemperature) < 0.21){
         internalComplete = true;
-      } 
+      }
+      if(nextInternalTemperature > prevInternalTemperature){
+        prevInternalTemperature += 0.21;
+        drawTemperature(internalXPOS, temperatureYPOS, prevInternalTemperature, prevInternalTemperature);
+      } else if (nextInternalTemperature < prevInternalTemperature){
+        prevInternalTemperature -= 0.21;
+        drawTemperature(internalXPOS, temperatureYPOS, prevInternalTemperature, prevInternalTemperature);
+      }
     }
     
-    //Add && lightComplete == true && airComplete == true && humidityComplete == true
-    if(internalComplete == true && externalComplete == true ){
+    //Add && airComplete == true && humidityComplete == true
+    if(internalComplete == true && externalComplete == true && lightComplete == true){
       animationComplete = true;
       internalComplete = false;
       externalComplete = false;
@@ -108,15 +125,42 @@ void draw() {
       humidityComplete = false;
     }
   }
-  drawTemperature(120, 80, prevExternalTemperature, prevExternalTemperature);
-  drawTemperature(240, 80, prevInternalTemperature, prevInternalTemperature);
+  drawTemperature(externalXPOS, temperatureYPOS, prevExternalTemperature, prevExternalTemperature);
+  drawTemperature(internalXPOS, temperatureYPOS, prevInternalTemperature, prevInternalTemperature);
+  drawLuminosity();
+}
+
+void drawLuminosity(){
+  float percentage = 255 * prevLight/maxLuminosity;
+  fill(percentage, percentage, 0);
+  circle(luminosityXPOS, luminosityYPOS, luminositySize);
+  line(luminosityXPOS, luminosityYPOS - 85, luminosityXPOS, luminosityYPOS - 100);
+  line(luminosityXPOS + 85, luminosityYPOS, luminosityXPOS + 100, luminosityYPOS);
+  line(luminosityXPOS + 30, luminosityYPOS - 80, luminosityXPOS + 35, luminosityYPOS - 95);
+  line(luminosityXPOS + 60, luminosityYPOS - 60, luminosityXPOS + 70, luminosityYPOS - 75);
+  line(luminosityXPOS + 80, luminosityYPOS - 35, luminosityXPOS + 95, luminosityYPOS - 45);
+  line(luminosityXPOS - 30, luminosityYPOS - 80, luminosityXPOS - 35, luminosityYPOS - 95);
+  line(luminosityXPOS - 60, luminosityYPOS - 60, luminosityXPOS - 70, luminosityYPOS - 75);
+  line(luminosityXPOS - 80, luminosityYPOS - 35, luminosityXPOS - 95, luminosityYPOS - 45);
+  line(luminosityXPOS + 80, luminosityYPOS + 35, luminosityXPOS + 95, luminosityYPOS + 45);
+  line(luminosityXPOS + 60, luminosityYPOS + 60, luminosityXPOS + 70, luminosityYPOS + 75);
+  line(luminosityXPOS + 30, luminosityYPOS + 80, luminosityXPOS + 35, luminosityYPOS + 95);
+  line(luminosityXPOS - 80, luminosityYPOS + 35, luminosityXPOS - 95, luminosityYPOS + 45);
+  line(luminosityXPOS - 60, luminosityYPOS + 60, luminosityXPOS - 70, luminosityYPOS + 75);
+  line(luminosityXPOS - 30, luminosityYPOS + 80, luminosityXPOS - 35, luminosityYPOS + 95);
+  line(luminosityXPOS - 85, luminosityYPOS, luminosityXPOS - 100, luminosityYPOS);
+  line(luminosityXPOS, luminosityYPOS + 85, luminosityXPOS, luminosityYPOS + 100);
+  textSize(30);
+  fill(24);
+  text(nf(prevLight, 1, 2) + " Lumens", luminosityXPOS - 70, luminosityYPOS + 140);
+  noFill();
 }
 
 void drawTemperature(float x, float y, float fillAmount, float temperature){
   strokeWeight(2);
   rect(x, y, 50, 220, 120);
   noStroke();
-  float percentage = 220 * (fillAmount/40.0);
+  float percentage = 220 * (fillAmount/maxTemperature);
   if(temperature < 12){
     fill(150, 200, 255);
   } else if (temperature >= 12 && temperature < 15){
@@ -141,24 +185,32 @@ void drawTemperature(float x, float y, float fillAmount, float temperature){
   }
   textSize(30);
   fill(24);
-  text(temperature + "°C", x, y + 250);
+  text(nf(temperature, 2, 2) + "°C", x, y + 250);
   noFill();
 }
 
 void getData(){
-  db = new SQLite(this, "test.db"); 
+  /*db = new SQLite(this, "test.db"); 
   if (db.connect()) {
 
-    db.query("SELECT * FROM data ORDER BY id DESC limit 1");
+    db.query("SELECT * FROM datos ORDER BY id DESC limit 1");
 
     while (db.next()) {
       nextHumidity =db.getInt("humedad");
-      nextExternalTemperature =db.getInt("exterior");
-      nextInternalTemperature = db.getInt("interior");
+      nextExternalTemperature =db.getInt("temperatura1");
+      nextInternalTemperature = db.getInt("temperatura2");
       nextLight = db.getInt("luz");
       nextAir = db.getInt("aire");
     }
     
   }
-  db.close();
+  db.close();*/
+  String[]json = loadStrings("http://34.125.201.170:3010/obtenerMetricas");
+  saveStrings("data.json", json);
+  JSONObject jobj = loadJSONObject("data.json");
+  nextHumidity = jobj.getFloat("humedad");
+  nextExternalTemperature = jobj.getFloat("temperatura1");
+  nextInternalTemperature = jobj.getFloat("temperatura2");
+  nextLight = jobj.getFloat("lumens");
+  nextAir = jobj.getFloat("co2");
 }
