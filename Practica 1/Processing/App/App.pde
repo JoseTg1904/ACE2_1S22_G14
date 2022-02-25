@@ -24,23 +24,26 @@ boolean humidityComplete = false;
 float externalXPOS = 120.0;
 float internalXPOS = 350.0;
 float temperatureYPOS = 30.0;
-float maxTemperature = 100.0;
+float maxTemperature = 40.0;
 
 float luminosityXPOS = 650;
 float luminosityYPOS = 140;
 float luminositySize = 150;
 float maxLuminosity = 2;
 
+float dropXPOS = 285;
+float dropYPOS = 500;
+float maxHumidity = 100;
+
+float particleMinHeight = 560;
+float particleMaxHeight = 370;
+float particleXPOS = 550;
+float maxAir = 20;
+
 void setup() {
   size(850, 650);
   background(255);
   frameRate(60);
-  getData();
-  prevHumidity = nextHumidity;
-  prevExternalTemperature = nextExternalTemperature;
-  prevInternalTemperature = nextInternalTemperature;
-  prevLight = nextLight;
-  prevAir = nextAir;
 }
 
 void draw() {
@@ -55,24 +58,28 @@ void draw() {
     getData();
   } else {
     if(humidityComplete == false){
-      if((int)nextHumidity > (int)prevHumidity){
-    
-      } else if ((int)nextHumidity < (int)prevHumidity){
-    
-      } else {
+      if (abs(nextHumidity - prevHumidity) < 0.25){
         humidityComplete = true;
-      } 
+      } else if (nextHumidity > prevHumidity){
+        prevHumidity += 0.25;
+        drawHumidity();
+      } else if (nextHumidity < prevHumidity){
+        prevHumidity -= 0.25;
+        drawHumidity();
+      }
     }
     
     
     if(airComplete == false){
-      if((int)nextAir > (int)prevAir){
-    
-      } else if ((int)nextAir < (int)prevAir){
-    
-      } else {
+      if (abs(nextAir - prevAir) < 0.03){
         airComplete = true;
-      } 
+      } else if(nextAir > prevAir){
+        prevAir += 0.03;
+        drawParticles();
+      } else if (nextAir < prevAir){
+        prevAir -= 0.03;
+        drawParticles();
+      }
     }
     
     
@@ -115,8 +122,7 @@ void draw() {
       }
     }
     
-    //Add && airComplete == true && humidityComplete == true
-    if(internalComplete == true && externalComplete == true && lightComplete == true){
+    if(internalComplete == true && externalComplete == true && lightComplete == true && airComplete == true && humidityComplete == true){
       animationComplete = true;
       internalComplete = false;
       externalComplete = false;
@@ -128,6 +134,57 @@ void draw() {
   drawTemperature(externalXPOS, temperatureYPOS, prevExternalTemperature, prevExternalTemperature);
   drawTemperature(internalXPOS, temperatureYPOS, prevInternalTemperature, prevInternalTemperature);
   drawLuminosity();
+  drawHumidity();
+  drawParticles();
+}
+
+void drawParticles(){
+  float percentage = particleMinHeight - ((abs(particleMaxHeight - particleMinHeight) * (prevAir/maxAir)));
+  stroke(87);
+  line(particleXPOS, particleMaxHeight, particleXPOS, particleMinHeight);
+  beginShape();
+  stroke(0);
+  fill(0);
+  vertex(particleXPOS - 27, percentage - 10);
+  vertex(particleXPOS - 7, percentage - 10);
+  vertex(particleXPOS - 2, percentage - 5);
+  vertex(particleXPOS - 7, percentage);
+  vertex(particleXPOS - 27, percentage);
+  vertex(particleXPOS - 27, percentage - 10);
+  endShape();
+  noFill();
+  text(nf(prevAir, 2, 2) + " PPM", particleXPOS - 60, particleMinHeight + 40);
+}
+
+void drawHumidity(){
+  arc(dropXPOS, dropYPOS, 120, 120, 1 - PI * 0.5, 2 + PI * 0.5, OPEN);
+  line(dropXPOS - 54, dropYPOS - 27, dropXPOS, dropYPOS - 133);
+  line(dropXPOS + 54, dropYPOS - 27, dropXPOS, dropYPOS - 133);
+  fill(135, 206, 235);
+  float ratio = prevHumidity/maxHumidity;
+  if(ratio <= 0.5){
+    arc(dropXPOS, dropYPOS, 120, 120, 1 - PI * ratio, 2 + PI * ratio, OPEN);
+  } else {
+    arc(dropXPOS, dropYPOS, 120, 120, 1 - PI * 0.5, 2 + PI * 0.54, OPEN);
+    int altura = (int)dropYPOS - 27;
+    int largo = 54;
+    stroke(135, 206, 235);
+    ratio =  altura - 98 * ((prevHumidity - 50)/(maxHumidity / 2));
+    for(int i = (int)dropXPOS - 54; i < (int)dropXPOS; i++){
+      if(largo - 5 >= 0){
+        line(i + 5, altura, dropXPOS + largo - 5, altura);
+        altura -= 2;
+        largo--;
+      }
+      if(altura < ratio){
+        break;
+      }
+    }
+  }
+  fill(0);
+  stroke(0);
+  text(nf(prevHumidity, 2, 2) + " %", dropXPOS - 40, dropYPOS + 100);
+  noFill();
 }
 
 void drawLuminosity(){
