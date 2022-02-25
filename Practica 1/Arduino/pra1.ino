@@ -67,7 +67,7 @@ String obtenerJson(float temp1, float temp2, float hum, double lum, float co2) {
   jsonSalida +=  ",\"lumens\": ";
   jsonSalida.concat(lum);
   jsonSalida +=  ",\"co2\": ";
-  jsonSalida.concat(lum);
+  jsonSalida.concat(co2);
   jsonSalida += "}";
   return jsonSalida;
 }
