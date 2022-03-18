@@ -38,10 +38,6 @@ void loop() {
 
 float calcularSuciedad(int pin) {
   int lectura = analogRead(pin);
-  Serial.print("Pin ");
-  Serial.print(pin);
-  Serial.print(" lectura ");
-  Serial.println(lectura);
   return (float) ((lectura * 100.0) / 400.0);
 }
 
@@ -61,12 +57,9 @@ float llenado() {
   digitalWrite(pinTrigger, LOW);
 
   unsigned int tiempo = pulseIn(pinEcho, HIGH);
-  unsigned int distancia = tiempo / 58;
+  float distancia = (tiempo / 2.9) / 2.0;
 
-  Serial.print("distancia ");
-  Serial.println(distancia);
-  
-  return 0.0;
+  return (90.0 - distancia) / 20.0;
 }
 
 String obtenerJson(float entrada, float salida, float humedad, float lleno) {
