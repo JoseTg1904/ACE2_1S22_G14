@@ -1,8 +1,8 @@
-from crypt import methods
 from flask import Flask, jsonify, request
 import mysql.connector
 from flask_cors import CORS
 from decouple import config
+import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -68,6 +68,54 @@ def getData(queryType=None):
 
     return jsonify({'Date': date, 'Data': data})
 
+
+@app.route('/getDates', methods=['GET'])
+def getDates():
+    dates = []
+    try:
+        cnx = mysql.connector.connect(**config)
+        cursor = cnx.cursor(dictionary=True)
+
+        query = "SELECT DISTINCT CAST(Fecha AS date) AS Fecha FROM Data;"
+
+        cursor.execute(query)
+        for row in cursor:
+            dates.append(row['Fecha'].strftime('%y-%m-%d'))
+
+        cursor.close()
+        cnx.commit()
+        cnx.close()
+
+    except mysql.connector.Error as err:
+        print(err)
+        return jsonify([])
+
+    return jsonify({'Dates': dates})
+
+
+@app.route('/getDataByDate/<dateInput>', methods=['GET'])
+def getDataByDate(dateInput=None):
+    data = []
+    try:
+        cnx = mysql.connector.connect(**config)
+        cursor = cnx.cursor(dictionary=True)
+
+        query = """SELECT Agua, Antes, Despues, Humedad, DATE_FORMAT(Fecha, "%H:%i:%s") AS Hora FROM Data WHERE 
+        CAST(Fecha AS date) = CAST("{}" AS date);""".format(dateInput)
+
+        cursor.execute(query)
+        for row in cursor:
+            data.append(row)
+
+        cursor.close()
+        cnx.commit()
+        cnx.close()
+
+    except mysql.connector.Error as err:
+        print(err)
+        return jsonify([])
+
+    return jsonify({'Data': data})
 
 if __name__ == '__main__':
     app.run()

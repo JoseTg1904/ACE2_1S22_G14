@@ -26,7 +26,6 @@ export const Graph = ({data, autoRefresh}) => {
                         break;
                 }
                 const response = await fetch(url)
-                console.log(url)
                 setResult(await response.json())
             } catch (error) {
                 console.log("error", error)
@@ -37,7 +36,7 @@ export const Graph = ({data, autoRefresh}) => {
         if(autoRefresh){
             interval = setInterval(() => {
                 fetchData()
-            }, 1 * 1000)
+            }, 2 * 1000)
         }
 
         return () => {
@@ -47,7 +46,6 @@ export const Graph = ({data, autoRefresh}) => {
 
     data.labels = result['Date'];
     data.datasets[0].data = result['Data'];
-    console.log(data.datasets[0].id)
 
     return (
         <div className={"p-4"}>
