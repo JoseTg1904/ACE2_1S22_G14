@@ -1,18 +1,16 @@
 from flask import Flask, jsonify
 import mysql.connector
 from flask_cors import CORS
-from dotenv import load_dotenv, find_dotenv
-import os
+from decouple import config
 
 app = Flask(__name__)
 CORS(app)
-load_dotenv(find_dotenv())
 
 config = {
-    'user': 'root',
-    'password': 'root',
-    'host': 'localhost',
-    'database': 'Proyecto1',
+    'user': config('DB_USER'),
+    'password': config('DB_PASSWORD'),
+    'host': config('DB_HOST'),
+    'database': config('DB_DATABASE'),
     'raise_on_warnings': True
 }
 
