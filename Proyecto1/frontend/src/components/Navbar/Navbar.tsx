@@ -22,7 +22,7 @@ export const Navbar = ({setData, autoRefresh, setAutoRefresh}) => {
                                 datasets: [
                                     {
                                         id: 1,
-                                        label: "Suciedad antes vs Tiempo",
+                                        label: "Suciedad antes(%) vs Tiempo",
                                         data: [],
                                         backgroundColor: "rgba(44, 239, 71, 0.2)",
                                         borderColor: "rgb(44, 239, 71, 1)",
@@ -39,7 +39,7 @@ export const Navbar = ({setData, autoRefresh, setAutoRefresh}) => {
                                 datasets: [
                                     {
                                         id: 2,
-                                        label: "Humedad vs Tiempo",
+                                        label: "Humedad(%) vs Tiempo",
                                         data: [],
                                         backgroundColor: "rgba(44, 239, 210,0.2)",
                                         borderColor: "rgb(44, 239, 210, 1)",
@@ -56,7 +56,7 @@ export const Navbar = ({setData, autoRefresh, setAutoRefresh}) => {
                                 datasets: [
                                     {
                                         id: 3,
-                                        label: "Suciedad despues vs Tiempo",
+                                        label: "Suciedad despues(%) vs Tiempo",
                                         data: [],
                                         backgroundColor: "rgba(239, 44, 184,0.2)",
                                         borderColor: "rgb(239, 44, 184, 1)",
@@ -73,7 +73,7 @@ export const Navbar = ({setData, autoRefresh, setAutoRefresh}) => {
                                 datasets: [
                                     {
                                         id: 4,
-                                        label: "Agua almacenada vs Tiempo",
+                                        label: "Agua almacenada(cm3) vs Tiempo",
                                         data: [],
                                         backgroundColor: "rgba(239, 239, 71,0.2)",
                                         borderColor: "rgb(239, 239, 71, 1)",
@@ -82,6 +82,23 @@ export const Navbar = ({setData, autoRefresh, setAutoRefresh}) => {
                                 ]
                             })
                         }>Agua almacenada</a>
+                    </li>
+                    <li className="nav-item active">
+                        <a className="nav-link" href="#" onClick={
+                            () => setData({
+                                labels: [],
+                                datasets: [
+                                    {
+                                        id: 5,
+                                        label: "Recoleccion(cm3) vs Tiempo",
+                                        data: [],
+                                        backgroundColor: "rgba(239, 44, 44, 0.2)",
+                                        borderColor: "rgb(239, 44, 44)",
+                                        borderWidth: 1
+                                    }
+                                ]
+                            })
+                        }>Recoleccion de Agua</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" onClick={

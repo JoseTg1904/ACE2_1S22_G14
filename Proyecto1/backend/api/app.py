@@ -49,9 +49,13 @@ def getData(queryType=None):
     try:
         cnx = mysql.connector.connect(**config)
         cursor = cnx.cursor(dictionary=True)
-
-        query = """SELECT {}, Fecha FROM (SELECT Id, {}, DATE_FORMAT(Fecha, "%H:%i:%s") AS Fecha FROM Data 
-        ORDER BY Id DESC LIMIT 10) s ORDER BY Id ASC;""".format(queryType, queryType)
+        if queryType == "Recolectada":
+            query = """SELECT ROUND((S.Agua-D.Agua), 2) AS Recolectada, S.Fecha FROM (SELECT Id, Agua, 
+                        DATE_FORMAT(Fecha, "%d-%m-%y %H:%i:%s") AS Fecha FROM Data ORDER BY Id DESC LIMIT 15) S, Data D WHERE 
+                        (S.Id - 1) = D.Id ORDER BY S.Id ASC;"""
+        else:
+            query = """SELECT {}, Fecha FROM (SELECT Id, {}, DATE_FORMAT(Fecha, "%d-%m-%y %H:%i:%s") AS Fecha FROM Data 
+                    ORDER BY Id DESC LIMIT 15) s ORDER BY Id ASC;""".format(queryType, queryType)
 
         cursor.execute(query)
         for row in cursor:
@@ -102,6 +106,32 @@ def getDataByDate(dateInput=None):
 
         query = """SELECT Agua, Antes, Despues, Humedad, DATE_FORMAT(Fecha, "%H:%i:%s") AS Hora FROM Data WHERE 
         CAST(Fecha AS date) = CAST("{}" AS date);""".format(dateInput)
+
+        cursor.execute(query)
+        for row in cursor:
+            data.append(row)
+
+        cursor.close()
+        cnx.commit()
+        cnx.close()
+
+    except mysql.connector.Error as err:
+        print(err)
+        return jsonify([])
+
+    return jsonify({'Data': data})
+
+
+@app.route('/getLast', methods=['GET'])
+def getLast():
+    data = []
+    try:
+        cnx = mysql.connector.connect(**config)
+        cursor = cnx.cursor(dictionary=True)
+
+        query = """SELECT Agua, Antes, Despues, Humedad, (SELECT ROUND((S.Agua-D.Agua), 2) AS Recolectada FROM Data D, 
+        (SELECT Id, Agua, DATE_FORMAT(Fecha, "%d-%m-%y %H:%i:%s") AS Fecha FROM Data ORDER BY Id DESC LIMIT 1) S WHERE (S.Id - 1)
+         = D.Id ORDER BY D.Id DESC LIMIT 1) AS Recolectada FROM Data D ORDER BY Id DESC LIMIT 1;"""
 
         cursor.execute(query)
         for row in cursor:

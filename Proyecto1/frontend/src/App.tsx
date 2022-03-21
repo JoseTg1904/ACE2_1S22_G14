@@ -5,6 +5,7 @@ import React, {useEffect, useState} from "react";
 import {Graph} from "./components/Graph/Graph";
 import {DateSelector} from "./components/DateSelector/DateSelector";
 import {LogTable} from "./components/LogTable/LogTable";
+import {Dashboard} from "./components/Dashboard/Dashboard";
 
 function App() {
     const [data, setData] = useState({
@@ -41,6 +42,7 @@ function App() {
     return (
         <div className="container">
             <Navbar setData={setData} autoRefresh={autoRefresh} setAutoRefresh={setAutoRefresh}/>
+            <Dashboard autoRefresh={autoRefresh}/>
             <Graph data={data} autoRefresh={autoRefresh}/>
             <DateSelector setLogData={setLogData} dates={dates}/>
             <LogTable logData={logData} />

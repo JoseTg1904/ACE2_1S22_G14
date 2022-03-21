@@ -24,6 +24,9 @@ export const Graph = ({data, autoRefresh}) => {
                     case 4:
                         url = process.env.REACT_APP_GET_DATA + "/Agua"
                         break;
+                    case 5:
+                        url = process.env.REACT_APP_GET_DATA + "/Recolectada"
+                        break;
                 }
                 const response = await fetch(url)
                 setResult(await response.json())
@@ -68,7 +71,7 @@ export const Graph = ({data, autoRefresh}) => {
                                         beginAtZero: true,
                                         fontColor: 'white',
                                         callback: function (value: string, index: any, ticks: any) {
-                                            return value + '%';
+                                            return value;
                                         }
                                     }
                                 }
@@ -80,7 +83,7 @@ export const Graph = ({data, autoRefresh}) => {
                                         beginAtZero: true,
                                         fontColor: 'white',
                                         callback: function (value: string, index: any, ticks: any) {
-                                            return value + ' H';
+                                            return value;
                                         }
                                     }
                                 }
