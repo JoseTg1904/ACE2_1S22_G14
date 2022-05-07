@@ -28,7 +28,7 @@ int paso [8][4] = {
 };
 
 void setup() {
-  Serial.begin(9600);
+  Serial1.begin(9600);
   //BT.begin(9600);
   pinMode(pinTemperatura, INPUT);
   pinMode(pinCO2, INPUT);
@@ -40,8 +40,8 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available()) {
-    lectura = Serial.read();
+  if (Serial1.available()) {
+    lectura = Serial1.read();
 
     if (lectura == "0c") { digitalWrite(pinChispero, LOW); } 
     else if (lectura == "1c") { digitalWrite(pinChispero, HIGH); } 
@@ -70,7 +70,7 @@ void loop() {
     salida.concat(temperatura);
     salida +=  "|";
     salida.concat(CO2);
-    Serial.write(&salida);
+    Serial1.write(&salida);
   }
 }
 
