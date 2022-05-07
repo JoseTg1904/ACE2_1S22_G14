@@ -1,11 +1,11 @@
-//#include <SoftwareSerial.h>
+#include <SoftwareSerial.h>
 
 #define RLOAD 10.0
 #define PARA 116.6020682
 #define PARB 2.769034857
 #define RZERO 76.63
 
-//SoftwareSerial BT(2, 3);
+SoftwareSerial BT(2, 3);
 const int pinCO2 = A1;
 const int pinTemperatura = A0;
 const int pinValvula1 = 6;
@@ -28,8 +28,8 @@ int paso [8][4] = {
 };
 
 void setup() {
-  Serial1.begin(9600);
-  //BT.begin(9600);
+  Serial.begin(9600);
+  BT.begin(9600);
   pinMode(pinTemperatura, INPUT);
   pinMode(pinCO2, INPUT);
   pinMode(pinValvula1, OUTPUT);
@@ -40,8 +40,8 @@ void setup() {
 }
 
 void loop() {
-  if (Serial1.available()) {
-    lectura = Serial1.read();
+  if (BT.available()) {
+    lectura = BT.read();
 
     if (lectura == "0c") { digitalWrite(pinChispero, LOW); } 
     else if (lectura == "1c") { digitalWrite(pinChispero, HIGH); } 
@@ -70,7 +70,7 @@ void loop() {
     salida.concat(temperatura);
     salida +=  "|";
     salida.concat(CO2);
-    Serial1.write(&salida);
+    BT.write(&salida);
   }
 }
 
