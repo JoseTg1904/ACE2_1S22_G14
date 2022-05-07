@@ -8,17 +8,34 @@
 SoftwareSerial BT(2, 3);
 const int pinCO2 = A1;
 const int pinTemperatura = A0;
-const int pinValvula = 4;
+const int pinValvula1 = 6;
+const int pinValvula2 = 7;
+const int pinValvula3 = 8;
+const int pinValvula4 = 9;
 const int pinChispero = 5;
 
 String lectura = "";
+
+int paso [8][4] = {
+  {1, 0, 0, 0},
+  {1, 1, 0, 0},
+  {0, 1, 0, 0},
+  {0, 1, 1, 0},
+  {0, 0, 1, 0},
+  {0, 0, 1, 1},
+  {0, 0, 0, 1},
+  {1, 0, 0, 1}
+};
 
 void setup() {
   Serial.begin(9600);
   BT.begin(9600);
   pinMode(pinTemperatura, INPUT);
   pinMode(pinCO2, INPUT);
-  pinMode(pinValvula, OUTPUT);
+  pinMode(pinValvula1, OUTPUT);
+  pinMode(pinValvula2, OUTPUT);
+  pinMode(pinValvula3, OUTPUT);
+  pinMode(pinValvula4, OUTPUT);
   pinMode(pinChispero, OUTPUT);
 }
 
@@ -28,8 +45,24 @@ void loop() {
 
     if (lectura == "0c") { digitalWrite(pinChispero, LOW); } 
     else if (lectura == "1c") { digitalWrite(pinChispero, HIGH); } 
-    else if (lectura == "0v") { digitalWrite(pinValvula, LOW); } 
-    else if (lectura == "1v") { digitalWrite(pinValvula, HIGH); }
+    else if (lectura == "0v") { 
+      for (int i = 0; i < 8; i++) {
+        digitalWrite(IN1, paso[i][0]);
+        digitalWrite(IN2, paso[i][1]);
+        digitalWrite(IN3, paso[i][2]);
+        digitalWrite(IN4, paso[i][3]);
+        delay(10);
+      }
+    } 
+    else if (lectura == "1v") { 
+      for (int i = 8; i >= 0; i--) {
+        digitalWrite(IN1, paso[i][0]);
+        digitalWrite(IN2, paso[i][1]);
+        digitalWrite(IN3, paso[i][2]);
+        digitalWrite(IN4, paso[i][3]);
+        delay(10);
+      }
+    }
 
     float temperatura = calcularTemperatura(pinTemperatura);
     float CO2 = calcularCO2();
