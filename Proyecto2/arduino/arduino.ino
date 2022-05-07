@@ -47,19 +47,19 @@ void loop() {
     else if (lectura == "1c") { digitalWrite(pinChispero, HIGH); } 
     else if (lectura == "0v") { 
       for (int i = 0; i < 8; i++) {
-        digitalWrite(IN1, paso[i][0]);
-        digitalWrite(IN2, paso[i][1]);
-        digitalWrite(IN3, paso[i][2]);
-        digitalWrite(IN4, paso[i][3]);
+        digitalWrite(pinValvula1, paso[i][0]);
+        digitalWrite(pinValvula2, paso[i][1]);
+        digitalWrite(pinValvula3, paso[i][2]);
+        digitalWrite(pinValvula4, paso[i][3]);
         delay(10);
       }
     } 
     else if (lectura == "1v") { 
       for (int i = 8; i >= 0; i--) {
-        digitalWrite(IN1, paso[i][0]);
-        digitalWrite(IN2, paso[i][1]);
-        digitalWrite(IN3, paso[i][2]);
-        digitalWrite(IN4, paso[i][3]);
+        digitalWrite(pinValvula1, paso[i][3]);
+        digitalWrite(pinValvula2, paso[i][2]);
+        digitalWrite(pinValvula3, paso[i][1]);
+        digitalWrite(pinValvula4, paso[i][0]);
         delay(10);
       }
     }
