@@ -8,8 +8,8 @@ CORS(app)
 
 config = {
     'user': 'root',
-    'password': 'root',
-    'host': 'localhost',
+    'password': 'root1234',
+    'host': '34.125.141.13',
     'database': 'proyecto2Arqui2',
     'raise_on_warnings': True
 }
