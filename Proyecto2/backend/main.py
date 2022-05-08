@@ -140,7 +140,7 @@ def getDataByDate(dateInput=None):
         cnx = mysql.connector.connect(**config)
         cursor = cnx.cursor(dictionary=True)
 
-        query = """SELECT temperatura, metano, DATE_FORMAT(Fecha, "%H:%i:%s") AS Hora FROM medidas WHERE 
+        query = """SELECT Temperatura, Metano, DATE_FORMAT(Fecha, "%H:%i:%s") AS Hora FROM medidas WHERE 
         CAST(fecha AS date) = CAST("{}" AS date);""".format(dateInput)
 
         cursor.execute(query)
