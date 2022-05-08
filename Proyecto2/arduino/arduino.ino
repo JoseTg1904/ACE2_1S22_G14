@@ -5,7 +5,7 @@
 #define PARB 2.769034857
 #define RZERO 76.63
 
-SoftwareSerial BT(2, 3);
+SoftwareSerial BT(2, 3); //rx, tx
 const int pinCO2 = A1;
 const int pinTemperatura = A0;
 const int pinValvula1 = 6;
@@ -14,7 +14,7 @@ const int pinValvula3 = 8;
 const int pinValvula4 = 9;
 const int pinChispero = 5;
 
-String lectura = "";
+//String lectura = "";
 
 int paso [8][4] = {
   {1, 0, 0, 0},
@@ -40,12 +40,12 @@ void setup() {
 }
 
 void loop() {
-  if (BT.available()) {
-    lectura = BT.read();
-
-    if (lectura == "0c") { digitalWrite(pinChispero, LOW); } 
-    else if (lectura == "1c") { digitalWrite(pinChispero, HIGH); } 
-    else if (lectura == "0v") { 
+  if (Serial.available() > 0) {
+    char lectura = Serial.read();
+    BT.print(lectura);
+    if (lectura == '0') { digitalWrite(pinChispero, LOW); } 
+    else if (lectura == '1') { digitalWrite(pinChispero, HIGH); } 
+    else if (lectura == '2') { 
       for (int i = 0; i < 8; i++) {
         digitalWrite(pinValvula1, paso[i][0]);
         digitalWrite(pinValvula2, paso[i][1]);
@@ -54,7 +54,7 @@ void loop() {
         delay(10);
       }
     } 
-    else if (lectura == "1v") { 
+    else if (lectura == '3') { 
       for (int i = 8; i >= 0; i--) {
         digitalWrite(pinValvula1, paso[i][3]);
         digitalWrite(pinValvula2, paso[i][2]);
@@ -63,15 +63,38 @@ void loop() {
         delay(10);
       }
     }
-
-    float temperatura = calcularTemperatura(pinTemperatura);
-    float CO2 = calcularCO2();
-    String salida = "";
-    salida.concat(temperatura);
-    salida +=  "|";
-    salida.concat(CO2);
-    BT.write(&salida);
   }
+  if (BT.available() > 0) {
+    char lectura = BT.read();
+    Serial.print(lectura);
+    if (lectura == '0') { digitalWrite(pinChispero, LOW); } 
+    else if (lectura == '1') { digitalWrite(pinChispero, HIGH); } 
+    else if (lectura == '2') { 
+      for (int i = 0; i < 8; i++) {
+        digitalWrite(pinValvula1, paso[i][0]);
+        digitalWrite(pinValvula2, paso[i][1]);
+        digitalWrite(pinValvula3, paso[i][2]);
+        digitalWrite(pinValvula4, paso[i][3]);
+        delay(10);
+      }
+    } 
+    else if (lectura == '3') { 
+      for (int i = 8; i >= 0; i--) {
+        digitalWrite(pinValvula1, paso[i][3]);
+        digitalWrite(pinValvula2, paso[i][2]);
+        digitalWrite(pinValvula3, paso[i][1]);
+        digitalWrite(pinValvula4, paso[i][0]);
+        delay(10);
+      }
+    }
+  }
+  /*float temperatura = calcularTemperatura(pinTemperatura);
+  float CO2 = calcularCO2();
+  String salida = "";
+  salida.concat(temperatura);
+  salida +=  "|";
+  salida.concat(CO2);
+  BT.println(salida);*/
 }
 
 float calcularCO2() {
