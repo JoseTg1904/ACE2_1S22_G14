@@ -83,8 +83,8 @@ def getData(queryType=None):
         cnx = mysql.connector.connect(**config)
         cursor = cnx.cursor(dictionary=True)
         if queryType == "Recolectado":
-            query = """SELECT ROUND((S.metano-D.metano), 2) AS Recolectada, S.Fecha FROM (SELECT id, metano, 
-                        DATE_FORMAT(fecha, "%d-%m-%y %H:%i:%s") AS Fecha FROM Data ORDER BY id DESC LIMIT 15) S, medidas
+            query = """SELECT ROUND((S.metano-D.metano), 2) AS Recolectado, S.Fecha FROM (SELECT id, metano, 
+                        DATE_FORMAT(fecha, "%d-%m-%y %H:%i:%s") AS Fecha FROM medidas ORDER BY id DESC LIMIT 15) S, medidas
                          D WHERE (S.id - 1) = D.id ORDER BY S.id ASC;"""
         elif queryType == "Tiempo":
             query = """SELECT uso as Tiempo, Fecha FROM (SELECT id, uso, DATE_FORMAT(fecha, "%d-%m-%y %H:%i:%s") AS Fecha FROM 
