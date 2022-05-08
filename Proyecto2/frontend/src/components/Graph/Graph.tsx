@@ -21,6 +21,9 @@ export const Graph = ({data, autoRefresh}) => {
                     case 3:
                         url = process.env.REACT_APP_GET_DATA + "/Tiempo"
                         break;
+                    case 4:
+                        url = process.env.REACT_APP_GET_DATA + "/Recolectado"
+                        break;
                 }
                 const response = await fetch(url)
                 setResult(await response.json())

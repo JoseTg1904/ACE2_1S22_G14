@@ -42,7 +42,7 @@ export const Dashboard = ({autoRefresh}) => {
     return (
         <div className="row date-selector">
             <div className="col">
-                <label>Metano: {realData['Data'][0]['Metano']}cm3</label>
+                <label>Metano: {realData['Data'][0]['Metano']}ppm</label>
             </div>
             <div className="col">
                 <label>Temperatura: {realData['Data'][0]['Temperatura']}Celsius</label>
