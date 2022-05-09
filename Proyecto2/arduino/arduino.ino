@@ -1,63 +1,67 @@
-#include <SoftwareSerial.h>
 #include <Stepper.h>
+
 
 #define RLOAD 10.0
 #define PARA 116.6020682
 #define PARB 2.769034857
 #define RZERO 76.63
-#define steps 100
 
-SoftwareSerial BT(2, 3); //rx, tx
-Stepper stepper(steps, 6, 7, 8, 9);
-Stepper stepperR(steps, 9, 8, 7, 6);
 const int pinCO2 = A1;
 const int pinTemperatura = A0;
+const int stepsPerRevolution = 2550;
 const int pinChispero = 5;
+Stepper myStepper = Stepper(stepsPerRevolution, 6, 7, 8, 9);
 
 //String lectura = "";
 
+int paso [8][4] = {
+  {1, 0, 0, 0},
+  {1, 1, 0, 0},
+  {0, 1, 0, 0},
+  {0, 1, 1, 0},
+  {0, 0, 1, 0},
+  {0, 0, 1, 1},
+  {0, 0, 0, 1},
+  {1, 0, 0, 1}
+};
+
 void setup() {
   Serial.begin(9600);
-  BT.begin(9600);
+  Serial2.begin(9600);
   pinMode(pinTemperatura, INPUT);
   pinMode(pinCO2, INPUT);
+
   pinMode(pinChispero, OUTPUT);
+    myStepper.setSpeed(5);
+
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    char lectura = Serial.read();
-    BT.print(lectura);
+
+  if (Serial2.available() > 0) {
+    char lectura = Serial2.read();
     if (lectura == '0') { digitalWrite(pinChispero, LOW); } 
     else if (lectura == '1') { digitalWrite(pinChispero, HIGH); } 
     else if (lectura == '2') { 
-      stepper.setSpeed(30);
-      stepper.step(100);
-    } 
-    else if (lectura == '3') { 
-      stepperR.setSpeed(30);
-      stepperR.step(100);
-    }
-  }
-  if (BT.available() > 0) {
-    char lectura = BT.read();
-    Serial.print(lectura);
-    if (lectura == '0') { digitalWrite(pinChispero, LOW); } 
-    else if (lectura == '1') { digitalWrite(pinChispero, HIGH); } 
-    else if (lectura == '2') { 
+      myStepper.step(-stepsPerRevolution);
+  myStepper.step(-stepsPerRevolution);
 
     } 
     else if (lectura == '3') { 
+       myStepper.step(-stepsPerRevolution);
+  myStepper.step(-stepsPerRevolution);
 
     }
   }
-  /*float temperatura = calcularTemperatura(pinTemperatura);
+  
+  float temperatura = calcularTemperatura(pinTemperatura);
   float CO2 = calcularCO2();
   String salida = "";
   salida.concat(temperatura);
   salida +=  "|";
   salida.concat(CO2);
-  BT.println(salida);*/
+  Serial2.println(salida);
+  delay(1000);
 }
 
 float calcularCO2() {
