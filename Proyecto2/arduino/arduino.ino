@@ -1,18 +1,16 @@
-#include <SoftwareSerial.h>
+#include <Stepper.h>
+
 
 #define RLOAD 10.0
 #define PARA 116.6020682
 #define PARB 2.769034857
 #define RZERO 76.63
 
-SoftwareSerial BT(2, 3); //rx, tx
 const int pinCO2 = A1;
 const int pinTemperatura = A0;
-const int pinValvula1 = 6;
-const int pinValvula2 = 7;
-const int pinValvula3 = 8;
-const int pinValvula4 = 9;
+const int stepsPerRevolution = 2550;
 const int pinChispero = 5;
+Stepper myStepper = Stepper(stepsPerRevolution, 6, 7, 8, 9);
 
 //String lectura = "";
 
@@ -29,72 +27,41 @@ int paso [8][4] = {
 
 void setup() {
   Serial.begin(9600);
-  BT.begin(9600);
+  Serial2.begin(9600);
   pinMode(pinTemperatura, INPUT);
   pinMode(pinCO2, INPUT);
-  pinMode(pinValvula1, OUTPUT);
-  pinMode(pinValvula2, OUTPUT);
-  pinMode(pinValvula3, OUTPUT);
-  pinMode(pinValvula4, OUTPUT);
+
   pinMode(pinChispero, OUTPUT);
+    myStepper.setSpeed(5);
+
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    char lectura = Serial.read();
-    BT.print(lectura);
+
+  if (Serial2.available() > 0) {
+    char lectura = Serial2.read();
     if (lectura == '0') { digitalWrite(pinChispero, LOW); } 
     else if (lectura == '1') { digitalWrite(pinChispero, HIGH); } 
     else if (lectura == '2') { 
-      for (int i = 0; i < 8; i++) {
-        digitalWrite(pinValvula1, paso[i][0]);
-        digitalWrite(pinValvula2, paso[i][1]);
-        digitalWrite(pinValvula3, paso[i][2]);
-        digitalWrite(pinValvula4, paso[i][3]);
-        delay(10);
-      }
+      myStepper.step(-stepsPerRevolution);
+  myStepper.step(-stepsPerRevolution);
+
     } 
     else if (lectura == '3') { 
-      for (int i = 8; i >= 0; i--) {
-        digitalWrite(pinValvula1, paso[i][3]);
-        digitalWrite(pinValvula2, paso[i][2]);
-        digitalWrite(pinValvula3, paso[i][1]);
-        digitalWrite(pinValvula4, paso[i][0]);
-        delay(10);
-      }
+       myStepper.step(-stepsPerRevolution);
+  myStepper.step(-stepsPerRevolution);
+
     }
   }
-  if (BT.available() > 0) {
-    char lectura = BT.read();
-    Serial.print(lectura);
-    if (lectura == '0') { digitalWrite(pinChispero, LOW); } 
-    else if (lectura == '1') { digitalWrite(pinChispero, HIGH); } 
-    else if (lectura == '2') { 
-      for (int i = 0; i < 8; i++) {
-        digitalWrite(pinValvula1, paso[i][0]);
-        digitalWrite(pinValvula2, paso[i][1]);
-        digitalWrite(pinValvula3, paso[i][2]);
-        digitalWrite(pinValvula4, paso[i][3]);
-        delay(10);
-      }
-    } 
-    else if (lectura == '3') { 
-      for (int i = 8; i >= 0; i--) {
-        digitalWrite(pinValvula1, paso[i][3]);
-        digitalWrite(pinValvula2, paso[i][2]);
-        digitalWrite(pinValvula3, paso[i][1]);
-        digitalWrite(pinValvula4, paso[i][0]);
-        delay(10);
-      }
-    }
-  }
-  /*float temperatura = calcularTemperatura(pinTemperatura);
+  
+  float temperatura = calcularTemperatura(pinTemperatura);
   float CO2 = calcularCO2();
   String salida = "";
   salida.concat(temperatura);
   salida +=  "|";
   salida.concat(CO2);
-  BT.println(salida);*/
+  Serial2.println(salida);
+  delay(1000);
 }
 
 float calcularCO2() {
