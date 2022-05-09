@@ -12,11 +12,13 @@ port.on("open", () => {
 });
 
 parser.on("data", async (data) => {
+
     let now = new Date();
     let fecha = "" + now.getDate() + "/" + (now.getMonth() + 1) + "/" +  now.getFullYear()
     fecha += " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds()
-    data.fecha = fecha
     
+    data=JSON.parse(data)
+    data.fecha=fecha
     await fetch("http://34.125.68.76:5000/insertarDatos", {
         method: 'POST',
         body: JSON.stringify(data),
