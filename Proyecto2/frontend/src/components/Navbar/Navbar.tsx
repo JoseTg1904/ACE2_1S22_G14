@@ -22,7 +22,7 @@ export const Navbar = ({setData, autoRefresh, setAutoRefresh}) => {
                                 datasets: [
                                     {
                                         id: 1,
-                                        label: "Temperatura(Celsius) vs Tiempo",
+                                        label: "Temperatura(Fahrenheit) vs Tiempo",
                                         data: [],
                                         backgroundColor: "rgba(44, 239, 71, 0.2)",
                                         borderColor: "rgb(44, 239, 71, 1)",

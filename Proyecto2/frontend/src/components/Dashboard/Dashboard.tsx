@@ -45,7 +45,7 @@ export const Dashboard = ({autoRefresh}) => {
                 <label>Metano: {realData['Data'][0]['Metano']}ppm</label>
             </div>
             <div className="col">
-                <label>Temperatura: {realData['Data'][0]['Temperatura']}Celsius</label>
+                <label>Temperatura: {realData['Data'][0]['Temperatura']}Fahrenheit</label>
             </div>
         </div>
     )
